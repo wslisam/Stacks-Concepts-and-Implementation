@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stacks: Concepts and Implementation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- MathJax for LaTeX rendering -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
     <style>
         [x-cloak] { display: none !important; }
         .stack-item-enter { animation: slide-down 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -28,11 +27,15 @@
             50% { transform: translateX(5px); }
             75% { transform: translateX(-5px); }
         }
+        .bounce-vertical { animation: bounce-v 2s infinite; }
+        @keyframes bounce-v {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-200" x-data="appData()" x-init="$watch('lang', () => { setTimeout(() => MathJax.typeset(), 50) })">
 
-    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3 text-indigo-600">
@@ -40,8 +43,8 @@
                 <h1 class="text-xl font-bold tracking-tight" x-text="t[lang].title"></h1>
             </div>
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-slate-500 hidden sm:inline-block font-normal">Created by Sam Li</span>
-                <button @click="toggleLang()" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-md text-sm font-semibold transition-colors shadow-sm">
+                <span class="text-sm text-slate-500 hidden sm:inline-block font-medium">Created by Sam Li</span>
+                <button @click="toggleLang()" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-md text-sm font-semibold transition-colors shadow-sm border border-slate-200">
                     <span x-text="lang === 'en' ? '中文' : 'English'"></span>
                 </button>
             </div>
@@ -50,7 +53,6 @@
 
     <main class="max-w-6xl mx-auto px-4 py-8 space-y-10">
         
-        <!-- Introduction Section -->
         <section class="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200 fade-in">
             <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
                 <i class="fa-solid fa-book-open text-indigo-500 mr-3"></i>
@@ -72,23 +74,38 @@
                         </ul>
                     </div>
                 </div>
+                
                 <div class="flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200 shadow-inner">
-                    <i class="fa-solid fa-cubes-stacked text-7xl text-indigo-400 mb-6 drop-shadow-md"></i>
-                    <h3 class="font-black text-2xl text-slate-700 tracking-wide" x-text="t[lang].lifoLabel"></h3>
+                    <div class="flex flex-col items-center w-full max-w-[200px]">
+                        <div class="flex space-x-6 mb-2 text-indigo-600 font-bold text-sm bounce-vertical">
+                            <div class="flex flex-col items-center">
+                                <span x-text="t[lang].lifoVisualIn"></span>
+                                <i class="fa-solid fa-arrow-down mt-1"></i>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <span x-text="t[lang].lifoVisualOut"></span>
+                                <i class="fa-solid fa-arrow-up mt-1"></i>
+                            </div>
+                        </div>
+                        <div class="w-full border-x-4 border-b-4 border-slate-600 rounded-b-lg p-3 flex flex-col-reverse gap-2 bg-white shadow-md">
+                            <div class="w-full h-10 bg-slate-200 rounded flex items-center justify-center font-bold text-slate-500 text-sm" x-text="t[lang].lifoVisualBot"></div>
+                            <div class="w-full h-10 bg-slate-300 rounded flex items-center justify-center font-bold text-slate-600 text-sm" x-text="t[lang].lifoVisualMid"></div>
+                            <div class="w-full h-10 bg-indigo-500 rounded flex items-center justify-center font-bold text-white shadow text-sm border-2 border-indigo-400" x-text="t[lang].lifoVisualTop"></div>
+                        </div>
+                    </div>
+                    <h3 class="font-black text-2xl text-slate-700 tracking-wide mt-6" x-text="t[lang].lifoLabel"></h3>
                     <p class="text-base text-slate-500 text-center mt-2 font-medium" x-text="t[lang].lifoDesc"></p>
                 </div>
             </div>
         </section>
 
-        <!-- Guiding Prompt 1 -->
         <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-xl shadow-sm max-w-4xl mx-auto fade-in">
             <h4 class="font-bold text-blue-800 flex items-center mb-2 text-lg">
-                <i class="fa-regular fa-comment-dots mr-2 text-xl"></i> <span x-text="t[lang].guide1Title"></span>
+                <i class="fa-solid fa-person-chalkboard mr-2 text-xl"></i> <span x-text="t[lang].guide1Title"></span>
             </h4>
             <p class="text-blue-900 leading-relaxed" x-html="t[lang].guide1Desc"></p>
         </div>
 
-        <!-- The Top Pointer Concept -->
         <section class="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200 fade-in">
             <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
                 <i class="fa-solid fa-hand-pointer mr-3 text-indigo-500"></i>
@@ -113,7 +130,6 @@
             </div>
         </section>
 
-        <!-- Guiding Prompt 2 -->
         <div class="bg-purple-50 border-l-4 border-purple-500 p-5 rounded-r-xl shadow-sm max-w-4xl mx-auto fade-in">
             <h4 class="font-bold text-purple-800 flex items-center mb-2 text-lg">
                 <i class="fa-solid fa-circle-question mr-2 text-xl"></i> <span x-text="t[lang].guide2Title"></span>
@@ -121,7 +137,6 @@
             <p class="text-purple-900 leading-relaxed" x-html="t[lang].guide2Desc"></p>
         </div>
 
-        <!-- Interactive Simulator Section -->
         <section class="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200 fade-in">
             <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
                 <i class="fa-solid fa-gamepad mr-3 text-indigo-500"></i>
@@ -129,7 +144,6 @@
             </h2>
             
             <div class="grid md:grid-cols-12 gap-8">
-                <!-- Controls & Logs -->
                 <div class="md:col-span-5 space-y-6 flex flex-col">
                     <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h3 class="font-bold mb-4 text-slate-800 flex items-center">
@@ -138,7 +152,6 @@
                         </h3>
                         
                         <div class="space-y-4">
-                            <!-- Push -->
                             <div class="flex space-x-2">
                                 <input type="text" x-model="inputValue" @keyup.enter="push()" :placeholder="t[lang].pushPlaceholder" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" maxlength="4">
                                 <button @click="push()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-bold transition-colors flex items-center shadow-md active:scale-95">
@@ -146,26 +159,22 @@
                                 </button>
                             </div>
                             
-                            <!-- Pop -->
                             <button @click="pop()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-lg font-bold transition-colors flex items-center justify-center shadow-md active:scale-95">
                                 <i class="fa-solid fa-arrow-up mr-2"></i> <span x-text="t[lang].btnPop"></span>
                             </button>
                             
-                            <!-- Reset -->
                             <button @click="reset()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold transition-colors text-sm mt-2">
                                 <i class="fa-solid fa-rotate-right mr-2"></i> <span x-text="t[lang].btnReset"></span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Message Box -->
                     <div x-show="message" x-transition class="p-4 rounded-xl border-2 font-bold flex items-center shadow-sm" 
                          :class="messageType === 'error' ? 'bg-red-50 border-red-300 text-red-700 shake' : 'bg-blue-50 border-blue-300 text-blue-700'" x-cloak>
                         <i class="mr-3 text-xl" :class="messageType === 'error' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-info'"></i>
                         <span x-text="message"></span>
                     </div>
 
-                    <!-- Operation History Log -->
                     <div class="flex-1 bg-slate-800 p-5 rounded-xl border border-slate-700 overflow-y-auto max-h-56 shadow-inner">
                         <h3 class="font-bold mb-3 text-slate-300 text-sm flex items-center">
                             <i class="fa-solid fa-terminal mr-2"></i>
@@ -180,11 +189,9 @@
                     </div>
                 </div>
 
-                <!-- Visualization -->
                 <div class="md:col-span-7 flex justify-center items-end bg-gradient-to-t from-slate-100 to-slate-50 rounded-xl p-8 border border-slate-200 min-h-[480px] shadow-inner">
                     <div class="flex space-x-8 w-full max-w-sm">
                         
-                        <!-- Top Pointer Indicator -->
                         <div class="flex flex-col-reverse justify-start w-24 relative">
                             <template x-for="(slot, index) in maxSize" :key="'ptr'+index">
                                 <div class="h-16 flex items-center justify-end pr-3 transition-all duration-300">
@@ -200,19 +207,15 @@
                             </div>
                         </div>
 
-                        <!-- Array / Stack -->
                         <div class="flex-1 border-x-8 border-b-8 border-slate-700 rounded-b-xl bg-white relative flex flex-col-reverse shadow-lg">
                             <template x-for="(slot, index) in maxSize" :key="index">
                                 <div class="h-16 border-t-2 border-slate-100 flex items-center justify-center relative group" :class="index > top ? 'bg-slate-50/80' : ''">
-                                    <!-- Index label -->
                                     <span class="absolute -left-10 text-sm text-slate-500 font-mono font-bold w-6 text-right" x-text="index"></span>
                                     
-                                    <!-- Item (Active) -->
                                     <template x-if="index <= top && stack[index] !== undefined">
                                         <div class="w-11/12 h-5/6 bg-gradient-to-b from-indigo-500 to-indigo-600 rounded-md text-white flex items-center justify-center font-black text-lg shadow-md stack-item-enter border border-indigo-700" x-text="stack[index]"></div>
                                     </template>
                                     
-                                    <!-- Item (Popped / Ghosted) -->
                                     <template x-if="index > top && stack[index] !== undefined">
                                         <div class="w-11/12 h-5/6 bg-slate-100 border-2 border-dashed border-slate-400 rounded-md text-slate-400 flex items-center justify-center font-bold opacity-50" :title="t[lang].ghostTitle">
                                             <span x-text="stack[index]"></span>
@@ -220,7 +223,6 @@
                                     </template>
                                 </div>
                             </template>
-                            <!-- Max Size Label -->
                             <div class="absolute -top-10 w-full text-center text-sm text-slate-600 font-mono font-black bg-slate-200 py-1 rounded-md shadow-sm border border-slate-300">
                                 MAX_SIZE = <span x-text="maxSize"></span>
                             </div>
@@ -230,7 +232,6 @@
             </div>
         </section>
 
-        <!-- Guiding Prompt 3 (Trap) -->
         <div class="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-xl shadow-sm max-w-4xl mx-auto fade-in">
             <h4 class="font-bold text-amber-800 flex items-center mb-2 text-lg">
                 <i class="fa-solid fa-triangle-exclamation mr-2 text-xl"></i> <span x-text="t[lang].trapTitle"></span>
@@ -238,7 +239,6 @@
             <p class="text-amber-900 leading-relaxed" x-html="t[lang].trapDesc"></p>
         </div>
 
-        <!-- Code Implementation Section -->
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden fade-in">
             <div class="border-b border-slate-200 bg-slate-50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center">
@@ -251,80 +251,147 @@
                 </div>
             </div>
             <div class="p-0">
-                <!-- Python Code -->
-                <div x-show="codeTab === 'python'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
+                <div x-show="codeTab === 'python' && lang === 'en'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
 <pre><code>MAX_SIZE = 5
 stack = [None] * MAX_SIZE
 top = -1  <span class="text-slate-400"># -1 indicates the stack is currently empty</span>
 
 def push(item):
     global top
-    <span class="text-emerald-400"># 1. Check for Overflow (Is the array full?)</span>
+    <span class="text-emerald-400"># Step 1: Check for Overflow (Is the array full?)</span>
     if top >= MAX_SIZE - 1:
         print("Error: Stack Overflow!")
         return False
     
-    <span class="text-blue-300"># 2. Increment top pointer FIRST</span>
-    <span class="text-slate-400"># We must move the pointer to the next empty slot before inserting</span>
+    <span class="text-blue-300"># Step 2: Move pointer FIRST</span>
     top += 1
     
-    <span class="text-blue-300"># 3. Insert item at the new top position</span>
+    <span class="text-blue-300"># Step 3: Insert item</span>
     stack[top] = item
     return True
 
 def pop():
     global top
-    <span class="text-emerald-400"># 1. Check for Underflow (Is the array empty?)</span>
+    <span class="text-emerald-400"># Step 1: Check for Underflow (Is the array empty?)</span>
     if top == -1:
         print("Error: Stack Underflow!")
         return None
     
-    <span class="text-blue-300"># 2. Retrieve the item currently at the top</span>
+    <span class="text-blue-300"># Step 2: Retrieve the item</span>
     item = stack[top]
     
-    <span class="text-blue-300"># 3. Decrement top pointer AFTER retrieval</span>
-    <span class="text-slate-400"># The item remains in memory, but is logically removed from our stack</span>
+    <span class="text-blue-300"># Step 3: Move pointer DOWN (Logical Deletion)</span>
     top -= 1
     return item</code></pre>
                 </div>
 
-                <!-- C++ Code -->
-                <div x-show="codeTab === 'cpp'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
+                <div x-show="codeTab === 'python' && lang === 'zh'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
+<pre><code>MAX_SIZE = 5
+stack = [None] * MAX_SIZE
+top = -1  <span class="text-slate-400"># -1 代表堆疊目前是空的</span>
+
+def push(item):
+    global top
+    <span class="text-emerald-400"># 步驟 1: 檢查是否溢位 Overflow (陣列滿了嗎？)</span>
+    if top >= MAX_SIZE - 1:
+        print("錯誤: 堆疊溢位 (Stack Overflow)!")
+        return False
+    
+    <span class="text-blue-300"># 步驟 2: 先將指標往上移</span>
+    top += 1
+    
+    <span class="text-blue-300"># 步驟 3: 放入新資料</span>
+    stack[top] = item
+    return True
+
+def pop():
+    global top
+    <span class="text-emerald-400"># 步驟 1: 檢查是否下溢 Underflow (陣列空了嗎？)</span>
+    if top == -1:
+        print("錯誤: 堆疊下溢 (Stack Underflow)!")
+        return None
+    
+    <span class="text-blue-300"># 步驟 2: 取得目前最頂端的資料</span>
+    item = stack[top]
+    
+    <span class="text-blue-300"># 步驟 3: 將指標往下移 (這就是邏輯刪除)</span>
+    top -= 1
+    return item</code></pre>
+                </div>
+
+                <div x-show="codeTab === 'cpp' && lang === 'en'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
 <pre><code>#include &lt;iostream&gt;
 using namespace std;
 
 const int MAX_SIZE = 5;
 int stack[MAX_SIZE];
-int top = -1; <span class="text-slate-400">// -1 indicates the stack is currently empty</span>
+int top = -1; <span class="text-slate-400">// -1 indicates the stack is empty</span>
 
 bool push(int item) {
-    <span class="text-emerald-400">// 1. Check for Overflow (Is the array full?)</span>
+    <span class="text-emerald-400">// Step 1: Check for Overflow</span>
     if (top >= MAX_SIZE - 1) {
         cout << "Error: Stack Overflow!" << endl;
         return false;
     }
     
-    <span class="text-blue-300">// 2. Increment top pointer FIRST</span>
-    <span class="text-slate-400">// We must move the pointer to the next empty slot before inserting</span>
+    <span class="text-blue-300">// Step 2: Increment top pointer FIRST</span>
     top++;
     
-    <span class="text-blue-300">// 3. Insert item at the new top position</span>
+    <span class="text-blue-300">// Step 3: Insert item at the new top position</span>
     stack[top] = item;
     return true;
 }
 
 int pop() {
-    <span class="text-emerald-400">// 1. Check for Underflow (Is the array empty?)</span>
+    <span class="text-emerald-400">// Step 1: Check for Underflow</span>
     if (top == -1) {
         cout << "Error: Stack Underflow!" << endl;
-        return -1; // Assuming -1 indicates error for this example
+        return -1; // -1 indicates error here
     }
     
-    <span class="text-blue-300">// 2. Retrieve the item currently at the top</span>
+    <span class="text-blue-300">// Step 2: Retrieve the item</span>
     int item = stack[top];
     
-    <span class="text-blue-300">// 3. Decrement top pointer AFTER retrieval</span>
-    <span class="text-slate-400">// The item remains in memory, but is logically removed from our stack</span>
+    <span class="text-blue-300">// Step 3: Decrement top pointer (Logical Deletion)</span>
+    top--;
+    return item;
+}</code></pre>
+                </div>
+
+                <div x-show="codeTab === 'cpp' && lang === 'zh'" class="bg-slate-900 text-slate-50 p-6 overflow-x-auto text-sm font-mono leading-relaxed" x-cloak>
+<pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+const int MAX_SIZE = 5;
+int stack[MAX_SIZE];
+int top = -1; <span class="text-slate-400">// -1 代表堆疊目前是空的</span>
+
+bool push(int item) {
+    <span class="text-emerald-400">// 步驟 1: 檢查是否溢位 (Overflow)</span>
+    if (top >= MAX_SIZE - 1) {
+        cout << "錯誤: 堆疊溢位 (Stack Overflow)!" << endl;
+        return false;
+    }
+    
+    <span class="text-blue-300">// 步驟 2: 先將指標遞增 (+1)</span>
+    top++;
+    
+    <span class="text-blue-300">// 步驟 3: 在新的頂部位置插入資料</span>
+    stack[top] = item;
+    return true;
+}
+
+int pop() {
+    <span class="text-emerald-400">// 步驟 1: 檢查是否下溢 (Underflow)</span>
+    if (top == -1) {
+        cout << "錯誤: 堆疊下溢 (Stack Underflow)!" << endl;
+        return -1; // 假設 -1 代表發生錯誤
+    }
+    
+    <span class="text-blue-300">// 步驟 2: 取得目前最頂端的資料</span>
+    int item = stack[top];
+    
+    <span class="text-blue-300">// 步驟 3: 指標遞減 (-1) 完成邏輯刪除</span>
     top--;
     return item;
 }</code></pre>
@@ -332,7 +399,6 @@ int pop() {
             </div>
         </section>
 
-        <!-- Quiz Section -->
         <section class="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200 fade-in mb-10">
             <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
                 <i class="fa-solid fa-clipboard-check mr-3 text-indigo-500"></i>
@@ -340,7 +406,6 @@ int pop() {
             </h2>
             
             <div class="space-y-6">
-                <!-- Q1 -->
                 <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                     <p class="font-bold text-slate-800 mb-4 text-lg" x-text="t[lang].q1"></p>
                     <div class="space-y-3">
@@ -359,7 +424,6 @@ int pop() {
                     </div>
                 </div>
 
-                <!-- Q2 -->
                 <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                     <p class="font-bold text-slate-800 mb-4 text-lg" x-text="t[lang].q2"></p>
                     <div class="space-y-3">
@@ -378,7 +442,6 @@ int pop() {
                     </div>
                 </div>
 
-                <!-- Q3 -->
                 <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                     <p class="font-bold text-slate-800 mb-4 text-lg" x-text="t[lang].q3"></p>
                     <div class="space-y-3">
@@ -464,6 +527,7 @@ int pop() {
                     this.message = '';
                     this.history = [];
                     this.addHistory(this.lang === 'en' ? "Stack Reset" : "堆疊已重設");
+                    this.quiz = { q1: null, q2: null, q3: null };
                 },
 
                 showMessage(msg, type) {
@@ -479,22 +543,27 @@ int pop() {
                         title: "Stacks: Concepts and Implementation",
                         introTitle: "What is a Stack?",
                         introP1: "A <strong>Stack</strong> is a linear data structure that follows the <strong>Last-In-First-Out (LIFO)</strong> principle. This means the last element added to the stack will be the very first one to be removed.",
-                        introP2: "Think of it like a stack of heavy plates in a cafeteria. You can only safely add a new plate to the top (Push), and you can only take a plate from the top (Pop). You cannot remove a plate from the middle or bottom without removing all the ones above it first.",
+                        introP2: "Think of it like a stack of heavy plates. You can only safely add a new plate to the top (Push), and you can only take a plate from the top (Pop). You cannot grab a plate from the middle!",
                         realWorldTitle: "Real-World Applications",
                         rw1: "Undo mechanism in text editors (Ctrl+Z).",
                         rw2: "Browser history (Back button).",
                         rw3: "Function call stack in programming languages.",
                         lifoLabel: "LIFO Principle",
                         lifoDesc: "Last In, First Out",
-                        guide1Title: "Think About It: How do we track the top?",
-                        guide1Desc: "If we use a standard array to build a stack, the array itself has a fixed size and doesn't naturally know where the 'top' is. How does the computer know which index to add to or remove from? We need a special variable to keep track of it! We call this the <code>top</code> pointer.",
+                        lifoVisualIn: "IN (Push)",
+                        lifoVisualOut: "OUT (Pop)",
+                        lifoVisualTop: "Last In (Top)",
+                        lifoVisualMid: "2nd In",
+                        lifoVisualBot: "1st In (Bottom)",
+                        guide1Title: "Teacher's Hint: Why not just use a normal list?",
+                        guide1Desc: "If we use a standard fixed array to build a stack, the computer doesn't naturally know where the 'top' is or where to put the next item. We need a special variable to keep track of the current highest index. We call this the <code>top</code> pointer.",
                         ptrTitle: "The 'Top' Pointer",
-                        ptrP1: "To implement a stack using an array, we use an integer variable called <code>top</code>. This variable stores the <strong>index</strong> of the top element in the array. Because array indices start at 0, an empty stack must have a <code>top</code> value of -1 (meaning it points to nothing).",
+                        ptrP1: "To implement a stack using an array, we use an integer variable called <code>top</code>. Because array indices start at 0, an empty stack must have a <code>top</code> value of -1 (meaning it points to nothing).",
                         ptrState1: "Stack is completely empty.",
                         ptrState2: "Stack has exactly 1 item (at index 0).",
                         ptrState3: "Stack is completely full.",
-                        guide2Title: "What happens when we Pop?",
-                        guide2Desc: "When we execute a Pop operation, do we actually delete the data from the array? <strong>No!</strong> We simply decrease the <code>top</code> pointer by 1. The old data remains in the array memory (we call this <em>logical deletion</em>), but our stack ignores it. It will be overwritten the next time we Push a new item. Try popping an item in the simulator below and observe what happens to the data!",
+                        guide2Title: "Teacher's Hint: Where does the popped data go?",
+                        guide2Desc: "When we 'Pop', do we actually delete the data? <strong>No!</strong> We just decrease the <code>top</code> pointer by 1. The old data remains in memory (we call this <em>logical deletion</em>), but our stack ignores it. It will be overwritten the next time we Push. Try popping in the simulator below and watch the 'ghost' data!",
                         simTitle: "Interactive Stack Simulator",
                         operations: "Operations Panel",
                         pushPlaceholder: "Enter value (optional)",
@@ -504,106 +573,91 @@ int pop() {
                         historyLog: "Operation Trace Log",
                         noHistory: "No operations yet.",
                         ghostTitle: "Logically deleted (remains in memory until overwritten)",
-                        trapTitle: "HKDSE Exam Trap: Boundary Conditions",
-                        trapDesc: "Students often forget to check for <strong>Overflow</strong> (is the array full?) before pushing, and <strong>Underflow</strong> (is the array empty?) before popping. Always verify <code>top >= MAX_SIZE - 1</code> before pushing, and <code>top == -1</code> before popping! Also, remember that array indices start at 0, so the maximum valid index is \\(MAX\\_SIZE - 1\\).",
+                        trapTitle: "Exam Trap: Boundary Conditions",
+                        trapDesc: "Students often forget to check for <strong>Overflow</strong> (is the array full?) before pushing, and <strong>Underflow</strong> (is the array empty?) before popping. Always verify <code>top >= MAX_SIZE - 1</code> before pushing, and <code>top == -1</code> before popping!",
                         codeTitle: "Implementation (Array-based)",
-                        msgOverflow: "Stack Overflow! Cannot push, the stack is full.",
-                        msgUnderflow: "Stack Underflow! Cannot pop, the stack is empty.",
-                        msgPushed: "Successfully Pushed:",
-                        msgPopped: "Successfully Popped:",
+                        msgOverflow: "Stack is full! (Overflow)",
+                        msgUnderflow: "Stack is empty! (Underflow)",
+                        msgPushed: "Pushed",
+                        msgPopped: "Popped",
                         quizTitle: "Check Your Understanding",
-                        q1: "Given an empty stack of size 5, what is the state of the stack after the following operations: Push(A), Push(B), Pop(), Push(C)? (Assume index 0 is bottom)",
-                        q1Opts: [
-                            "Index 0: A, Index 1: B, Index 2: C (Top = 2)",
-                            "Index 0: A, Index 1: C (Top = 1)",
-                            "Index 0: C, Index 1: B (Top = 1)",
-                            "Error: Stack Underflow"
-                        ],
-                        q1Correct: "Correct! B was popped (top became 0), then C was pushed into index 1, overwriting B.",
-                        q1Incorrect: "Incorrect. Try tracing the Top pointer step-by-step using the simulator.",
-                        q2: "If MAX_SIZE is 10, at what value of the `top` pointer will a Push operation trigger a Stack Overflow error?",
-                        q2Opts: [
-                            "top = 10",
-                            "top = -1",
-                            "top = 9",
-                            "top = 0"
-                        ],
-                        q2Correct: "Correct! Since arrays are 0-indexed, the highest valid index is 9 (MAX_SIZE - 1). If top is 9, the array is full.",
-                        q2Incorrect: "Incorrect. Remember that array indices start at 0. If the size is 10, what is the last index?",
-                        q3: "When an item is popped from an array-based stack, what physically happens to the data in the array?",
+                        q1: "Which principle does a Stack data structure follow?",
+                        q1Opts: ["First-In-First-Out (FIFO)", "Last-In-First-Out (LIFO)", "First-In-Last-Out (FILO)", "Random Access"],
+                        q1Correct: "Correct! The last item added is the first one removed.",
+                        q1Incorrect: "Incorrect. Think about a stack of plates.",
+                        q2: "If the 'top' pointer is currently at 3, how many items are in the stack? (Assuming array indices start at 0)",
+                        q2Opts: ["3 items", "Empty", "4 items", "Stack is full"],
+                        q2Correct: "Correct! Indices 0, 1, 2, and 3 mean there are 4 items.",
+                        q2Incorrect: "Incorrect. Remember to count index 0!",
+                        q3: "What actually happens to the array memory when you 'Pop' an item?",
                         q3Opts: [
-                            "The data remains in the array memory, but the top pointer is decreased.",
-                            "The data is permanently erased and replaced with a zero.",
-                            "All remaining items in the array shift down by one index.",
-                            "The array shrinks in size."
+                            "The top pointer decreases, but old data remains until overwritten.", 
+                            "The element is permanently erased and set to null.", 
+                            "The array physically shrinks in size.", 
+                            "All remaining elements shift down by one position."
                         ],
-                        q3Correct: "Correct! This is known as logical deletion. The data is ignored and will be overwritten on the next Push.",
-                        q3Incorrect: "Incorrect. Think about the simulator: the popped item becomes 'ghosted' but doesn't disappear until overwritten."
+                        q3Correct: "Correct! This is called logical deletion.",
+                        q3Incorrect: "Incorrect. Review the 'Where does the popped data go?' section."
                     },
                     zh: {
-                        title: "堆疊：概念與實作",
-                        introTitle: "什麼是堆疊 (Stack)？",
-                        introP1: "<strong>堆疊 (Stack)</strong> 是一種線性資料結構，遵循<strong>後進先出 (LIFO - Last-In-First-Out)</strong> 原則。這意味著最後加入堆疊的元素將會是第一個被移除的。",
-                        introP2: "想像一下自助餐廳裡的一疊沉重盤子。你只能安全地把新盤子放在最上面（推入 Push），也只能從最上面拿走盤子（彈出 Pop）。你不能直接從中間或底部抽出盤子，否則上面的盤子會掉下來。",
+                        title: "堆疊 (Stacks)：概念與實作",
+                        introTitle: "什麼是堆疊？",
+                        introP1: "<strong>堆疊 (Stack)</strong> 是一種遵循 <strong>後進先出 (LIFO)</strong> 原則的線性資料結構。這意味著最後加入堆疊的元素，將會是第一個被移除的。",
+                        introP2: "想像一下疊起來的盤子。你只能安全地將新盤子放在最上面（推入 Push），也只能從最上面拿走盤子（彈出 Pop）。你無法直接從中間抽走盤子！",
                         realWorldTitle: "實際應用",
-                        rw1: "文字編輯器中的「復原 (Undo)」功能 (Ctrl+Z)。",
-                        rw2: "網頁瀏覽器的歷史紀錄（上一頁按鈕）。",
-                        rw3: "程式語言中的函式呼叫堆疊 (Call Stack)。",
+                        rw1: "文字編輯器中的復原機制 (Ctrl+Z)",
+                        rw2: "瀏覽器的歷史紀錄 (上一頁按鈕)",
+                        rw3: "程式語言中的函式呼叫堆疊 (Function call stack)",
                         lifoLabel: "LIFO 原則",
-                        lifoDesc: "後進先出",
-                        guide1Title: "想一想：我們如何追蹤頂部？",
-                        guide1Desc: "如果我們使用標準陣列 (Array) 來建立堆疊，陣列本身的大小是固定的，它並不知道哪裡是「頂部」。電腦如何知道應該在哪個索引新增或移除資料？我們需要一個特殊的變數來記錄它！我們稱之為 <code>top</code> 指標。",
-                        ptrTitle: "「頂部 (Top)」指標",
-                        ptrP1: "為了使用陣列實作堆疊，我們使用一個名為 <code>top</code> 的整數變數。這個變數儲存了陣列中頂部元素的<strong>索引 (Index)</strong>。因為陣列索引從 0 開始，所以一個空的堆疊其 <code>top</code> 值必須為 -1（代表它沒有指向任何東西）。",
+                        lifoDesc: "後進先出 (Last In, First Out)",
+                        lifoVisualIn: "推入 (IN)",
+                        lifoVisualOut: "彈出 (OUT)",
+                        lifoVisualTop: "最後進入 (頂部)",
+                        lifoVisualMid: "第二個進入",
+                        lifoVisualBot: "最先進入 (底部)",
+                        guide1Title: "🤔 思考引導：為什麼不直接用普通清單？",
+                        guide1Desc: "如果我們使用固定長度的陣列來建立堆疊，電腦並不知道目前堆疊的「最頂部」在哪裡，也不知道下一個資料該放在哪個位置。因此，我們需要一個特殊的變數來紀錄目前最高的索引值，我們稱之為 <code>top</code> 指標。",
+                        ptrTitle: "「Top」指標",
+                        ptrP1: "為了使用陣列實作堆疊，我們使用一個名為 <code>top</code> 的整數變數。這個變數儲存了陣列中頂部元素的<strong>索引值</strong>。因為陣列索引從 0 開始，所以「空堆疊」的 <code>top</code> 值必須設定為 -1（代表它沒有指向任何有效資料）。",
                         ptrState1: "堆疊完全為空。",
-                        ptrState2: "堆疊剛好有 1 個項目（在索引 0）。",
-                        ptrState3: "堆疊已完全滿載。",
-                        guide2Title: "彈出 (Pop) 時會發生什麼事？",
-                        guide2Desc: "當我們執行 Pop 操作時，我們真的從陣列中刪除了資料嗎？<strong>沒有！</strong>我們只是將 <code>top</code> 指標減 1。舊資料仍然保留在陣列記憶體中（我們稱之為<em>邏輯刪除</em>），但我們的堆疊會忽略它。下次推入新項目時，它就會被覆蓋。試著在下方的模擬器中彈出一個項目，觀察資料會發生什麼變化！",
+                        ptrState2: "堆疊剛好有 1 個項目（位於索引 0）。",
+                        ptrState3: "堆疊已完全客滿。",
+                        guide2Title: "🤔 思考引導：彈出的資料去哪了？",
+                        guide2Desc: "當我們執行「彈出 (Pop)」時，我們真的把資料刪除乾淨了嗎？<strong>沒有！</strong>我們只是將 <code>top</code> 指標減 1。舊資料仍然保留在記憶體中（我們稱之為<em>邏輯刪除</em>），但我們的程式會忽略它。下次我們推入新資料時，它就會被覆寫。試著在下方模擬器彈出項目，觀察變成灰色的「殘留資料」！",
                         simTitle: "互動式堆疊模擬器",
                         operations: "操作面板",
                         pushPlaceholder: "輸入數值 (選填)",
                         btnPush: "推入 (Push)",
                         btnPop: "彈出 (Pop)",
                         btnReset: "重設堆疊",
-                        historyLog: "操作追蹤紀錄",
-                        noHistory: "尚未有任何操作。",
-                        ghostTitle: "邏輯刪除（保留在記憶體中直到被覆蓋）",
-                        trapTitle: "HKDSE 考試陷阱：邊界條件",
-                        trapDesc: "學生常忘記在推入前檢查<strong>溢位 (Overflow)</strong>（陣列是否已滿？），以及在彈出前檢查<strong>下溢 (Underflow)</strong>（陣列是否為空？）。務必在 Push 前檢查 <code>top >= MAX_SIZE - 1</code>，並在 Pop 前檢查 <code>top == -1</code>！此外，請記住陣列索引從 0 開始，因此最大有效索引為 \\(MAX\\_SIZE - 1\\)。",
-                        codeTitle: "程式碼實作 (基於陣列)",
-                        msgOverflow: "堆疊溢位 (Overflow)！無法推入，堆疊已滿。",
-                        msgUnderflow: "堆疊下溢 (Underflow)！無法彈出，堆疊為空。",
-                        msgPushed: "成功推入：",
-                        msgPopped: "成功彈出：",
-                        quizTitle: "自我評估",
-                        q1: "已知一個大小為 5 的空堆疊，經過以下操作後，堆疊的狀態為何：Push(A), Push(B), Pop(), Push(C)？（假設索引 0 為底部）",
-                        q1Opts: [
-                            "索引 0: A, 索引 1: B, 索引 2: C (Top = 2)",
-                            "索引 0: A, 索引 1: C (Top = 1)",
-                            "索引 0: C, 索引 1: B (Top = 1)",
-                            "錯誤：堆疊下溢 (Underflow)"
-                        ],
-                        q1Correct: "正確！B 被彈出（top 變成 0），然後 C 被推入到索引 1 的位置，覆蓋了 B。",
-                        q1Incorrect: "不正確。請試著使用模擬器一步步追蹤 Top 指標的變化。",
-                        q2: "如果 MAX_SIZE 是 10，當 `top` 指標的值為多少時，執行 Push 操作會引發堆疊溢位 (Overflow) 錯誤？",
-                        q2Opts: [
-                            "top = 10",
-                            "top = -1",
-                            "top = 9",
-                            "top = 0"
-                        ],
-                        q2Correct: "正確！因為陣列是從 0 開始索引的，所以最高有效索引是 9 (MAX_SIZE - 1)。如果 top 是 9，陣列就滿了。",
-                        q2Incorrect: "不正確。請記住陣列索引是從 0 開始的。如果大小是 10，最後一個索引是多少？",
-                        q3: "當一個項目從基於陣列的堆疊中被彈出 (Pop) 時，陣列中的資料實際上發生了什麼事？",
+                        historyLog: "操作歷史紀錄",
+                        noHistory: "尚無操作紀錄。",
+                        ghostTitle: "邏輯刪除 (保留在記憶體中直到被覆寫)",
+                        trapTitle: "考試陷阱：邊界條件 (Boundary Conditions)",
+                        trapDesc: "學生寫程式時經常忘記檢查！推入 (Push) 前必須檢查<strong>溢位 (Overflow)</strong>，看看陣列滿了沒；彈出 (Pop) 前必須檢查<strong>下溢 (Underflow)</strong>，看看陣列是不是空的。永遠記得先驗證 <code>top >= MAX_SIZE - 1</code> 和 <code>top == -1</code>！",
+                        codeTitle: "程式碼實作 (陣列基礎)",
+                        msgOverflow: "堆疊已滿！(Overflow)",
+                        msgUnderflow: "堆疊為空！(Underflow)",
+                        msgPushed: "已推入",
+                        msgPopped: "已彈出",
+                        quizTitle: "隨堂小測驗",
+                        q1: "堆疊 (Stack) 資料結構遵循哪個原則？",
+                        q1Opts: ["先進先出 (FIFO)", "後進先出 (LIFO)", "先進後出 (FILO)", "隨機存取"],
+                        q1Correct: "正確！最後加入的項目會最先被移除。",
+                        q1Incorrect: "不正確。想想疊起來的盤子！",
+                        q2: "如果 'top' 指標目前為 3，堆疊中有多少個項目？（假設陣列索引從 0 開始）",
+                        q2Opts: ["3 個", "空", "4 個", "已滿"],
+                        q2Correct: "正確！索引包含 0, 1, 2 和 3，所以共有 4 個項目。",
+                        q2Incorrect: "不正確。記得要把索引 0 算進去喔！",
+                        q3: "當你「彈出 (Pop)」一個項目時，陣列記憶體實際發生了什麼事？",
                         q3Opts: [
-                            "資料仍然保留在陣列記憶體中，但 top 指標減少了。",
-                            "資料被永久刪除並替換為零。",
-                            "陣列中所有剩餘的項目都會向下移動一個索引。",
-                            "陣列的大小會縮小。"
+                            "top 指標減少，但舊資料仍保留在記憶體中直到被覆寫。", 
+                            "元素被永久刪除並設為 null。", 
+                            "陣列的實體大小縮小了。", 
+                            "所有剩餘元素向下移動一個位置。"
                         ],
-                        q3Correct: "正確！這被稱為邏輯刪除。資料會被忽略，並在下次推入時被覆蓋。",
-                        q3Incorrect: "不正確。回想一下模擬器：彈出的項目會變成「半透明」，直到被覆蓋前都不會消失。"
+                        q3Correct: "正確！這被稱為邏輯刪除 (Logical Deletion)。",
+                        q3Incorrect: "不正確。請複習上方「彈出的資料去哪了？」的區塊。"
                     }
                 }
             }
