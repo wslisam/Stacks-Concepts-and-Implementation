@@ -1,5 +1,7 @@
 # 📚 Stacks: Concepts and Implementation
 
+<img width="1184" height="840" alt="image" src="https://github.com/user-attachments/assets/46dd0939-4840-4c09-86d5-47eaf72ee3a0" />
+
 Welcome to the **Stack Learning Tool**! This web application is designed to help students easily understand one of the most fundamental data structures in computer science: **The Stack**. 
 
 Whether you are preparing for your HKDSE ICT exams or just starting your journey in programming, this tool will guide you through the concepts visually and interactively.
